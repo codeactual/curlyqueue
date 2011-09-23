@@ -5,9 +5,11 @@
  * @package CurlyQueue
  */
 
+namespace CurlyQueue;
+
 use \Flow\Interruptable;
 
-require_once __DIR__ . '/../vendor/flow/src/Flow/Interruptable.php';
+require_once __DIR__ . '/../../vendor/flow/src/Flow/Interruptable.php';
 
 /**
  * Mutli-handle, asynchronous, chunked cURL queue with per-request callbacks

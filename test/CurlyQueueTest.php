@@ -1,9 +1,9 @@
 <?php
 
-require_once __DIR__. '/../src/CurlyQueue.php';
+require_once __DIR__. '/../src/CurlyQueue/CurlyQueue.php';
 require_once __DIR__. '/../vendor/flow/src/Flow/Flow.php';
 
-use \CurlyQueue;
+use \CurlyQueue\CurlyQueue;
 use \Flow\Flow;
 
 class CurlyQueueTest extends PHPUnit_Framework_TestCase
