@@ -84,16 +84,6 @@ class CurlyQueue implements Interruptable
   }
 
   /**
-   * Read access to $this->curlOpts.
-   *
-   * @return array
-   */
-  public function getCurlOpts()
-  {
-    return $this->curlOpts;
-  }
-
-  /**
    * For Interruptable.
    *
    * @inheritdoc
