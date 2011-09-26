@@ -12,16 +12,15 @@ use \Flow\Interruptable;
 require_once __DIR__ . '/../../vendor/flow/src/Flow/Interruptable.php';
 
 /**
- * Mutli-handle, asynchronous, chunked cURL queue with per-request callbacks
- * and context variables.
+ * Wraps the cURL handle queue and event handling.
  */
 class CurlyQueue implements Interruptable
 {
   /**
    * @var array
    *
-   *      array(array('url' => 'url1', 'requestObj' => 'requestObj1'),
-   *            array('url' => 'url2', 'requestObj' => 'requestObj2'),
+   *      array(array('url' => 'url1', 'context' => 'context1'),
+   *            array('url' => 'url2', 'context' => 'context2'),
    *            ...);
    */
   protected $queue;
@@ -32,7 +31,7 @@ class CurlyQueue implements Interruptable
    *            Indexed by cURL handle. (Can't rely on URL keys since
    *            curl_getinfo() returns the last effective, not initial, URL).
    */
-  protected $requestObjs;
+  protected $contexts;
 
   /**
    * @var callback Post-response callback.
@@ -136,12 +135,12 @@ class CurlyQueue implements Interruptable
    * Add a URL to the queue.
    *
    * @param string $url
-   * @param mixed $requestObj Request identifer(s). See $queue.
+   * @param mixed $context Request identifer(s). See $queue.
    * @return void
    */
-  public function add($url, $requestObj)
+  public function add($url, $context)
   {
-    $this->queue[] = array('url' => $url, 'requestObj' => $requestObj);
+    $this->queue[] = array('url' => $url, 'context' => $context);
   }
 
   /**
@@ -157,7 +156,7 @@ class CurlyQueue implements Interruptable
 
     // Link handle and request ID data for reassociation in the callback.
     $requestKey = (string) $ch;
-    $this->requestObjs[$requestKey] = $this->queue[$queuePos]['requestObj'];
+    $this->contexts[$requestKey] = $this->queue[$queuePos]['context'];
 
     // Apply default cURL options.
     $options = $this->curlOpts;
@@ -243,7 +242,7 @@ class CurlyQueue implements Interruptable
               $this->responseCallback,
               $done['handle'],
               curl_multi_getcontent($done['handle']),
-              $this->requestObjs[$requestKey]
+              $this->contexts[$requestKey]
             );
           }
 
@@ -260,7 +259,7 @@ class CurlyQueue implements Interruptable
             call_user_func(
               $this->errorCallback,
               $done['handle'],
-              $this->requestObjs[$requestKey]
+              $this->contexts[$requestKey]
             );
           }
 
@@ -291,7 +290,7 @@ class CurlyQueue implements Interruptable
     curl_multi_close($this->mh);
 
     $this->queue = array();
-    $this->requestObjs = array();
+    $this->contexts = array();
 
     if ($this->endCallback) {
       call_user_func($this->endCallback);

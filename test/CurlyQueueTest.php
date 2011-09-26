@@ -42,11 +42,11 @@ class CurlyQueueTest extends PHPUnit_Framework_TestCase
     $responses = array();
     $that = $this;
 
-    $this->queue->setResponseCallback(function ($ch, $content, $requestObj) use (&$responses, $that) {
+    $this->queue->setResponseCallback(function ($ch, $content, $context) use (&$responses, $that) {
       $info = curl_getinfo($ch);
       $that->assertSame(200, $info['http_code']);
       $that->assertGreaterThanOrEqual(9000, $info['size_download']);
-      $responses[$info['url']] = $requestObj;
+      $responses[$info['url']] = $context;
     });
 
     $this->queue->setEndCallback(function () use ($that, &$responses) {
@@ -54,14 +54,14 @@ class CurlyQueueTest extends PHPUnit_Framework_TestCase
       $that->assertSame(count($that->extUrlConfig), count($responses), var_export($responses, true));
     });
 
-    foreach ($this->extUrlConfig as $url => $requestObj) {
-      $this->queue->add($url, $requestObj);
+    foreach ($this->extUrlConfig as $url => $context) {
+      $this->queue->add($url, $context);
     }
     $this->queue->exec();
 
     $this->assertSame(count($this->extUrlConfig), count($responses));
-    foreach ($this->extUrlConfig as $url => $requestObj) {
-      $this->assertSame($requestObj, $responses[$url]);
+    foreach ($this->extUrlConfig as $url => $context) {
+      $this->assertSame($context, $responses[$url]);
     }
   }
 
@@ -74,10 +74,10 @@ class CurlyQueueTest extends PHPUnit_Framework_TestCase
     $responses = array();
 
     $that = $this;
-    $this->queue->setErrorCallback(function ($ch, $requestObj) use (&$responses, $that) {
+    $this->queue->setErrorCallback(function ($ch, $context) use (&$responses, $that) {
       $info = curl_getinfo($ch);
       $that->assertSame(404, $info['http_code']);
-      $responses[$info['url']] = $requestObj;
+      $responses[$info['url']] = $context;
     });
 
     $urlConfig = array(
@@ -86,14 +86,14 @@ class CurlyQueueTest extends PHPUnit_Framework_TestCase
       'http://www.google.com/badUrl-2' => uniqid(),
       'https://twitter.com/badUrl-3' => uniqid()
     );
-    foreach ($urlConfig as $url => $requestObj) {
-      $this->queue->add($url, $requestObj);
+    foreach ($urlConfig as $url => $context) {
+      $this->queue->add($url, $context);
     }
     $this->queue->exec();
 
     $this->assertSame(count($urlConfig), count($responses), var_export(array_keys($responses), true));
-    foreach ($urlConfig as $url => $requestObj) {
-      $this->assertSame($requestObj, $responses[$url]);
+    foreach ($urlConfig as $url => $context) {
+      $this->assertSame($context, $responses[$url]);
     }
   }
 
@@ -106,11 +106,11 @@ class CurlyQueueTest extends PHPUnit_Framework_TestCase
     $responses = array();
 
     $that = $this;
-    $this->queue->setErrorCallback(function ($ch, $requestObj) use (&$responses, $that) {
+    $this->queue->setErrorCallback(function ($ch, $context) use (&$responses, $that) {
       $info = curl_getinfo($ch);
       $that->assertSame(0, $info['http_code']);
       $that->assertSame(0, $info['request_size']);
-      $responses[$info['url']] = $requestObj;
+      $responses[$info['url']] = $context;
     });
 
     // Port which is most likely unused
@@ -121,14 +121,14 @@ class CurlyQueueTest extends PHPUnit_Framework_TestCase
       'http://localhost:8070/badUrl-3' => uniqid(),
       'http://localhost:8070/badUrl-4' => uniqid()
     );
-    foreach ($urlConfig as $url => $requestObj) {
-      $this->queue->add($url, $requestObj);
+    foreach ($urlConfig as $url => $context) {
+      $this->queue->add($url, $context);
     }
     $this->queue->exec();
 
     $this->assertSame(count($urlConfig), count($responses));
-    foreach ($urlConfig as $url => $requestObj) {
-      $this->assertSame($requestObj, $responses[$url]);
+    foreach ($urlConfig as $url => $context) {
+      $this->assertSame($context, $responses[$url]);
     }
   }
 
@@ -140,13 +140,13 @@ class CurlyQueueTest extends PHPUnit_Framework_TestCase
   {
     $responses = array();
 
-    $this->queue->setResponseCallback(function ($ch, $content, $requestObj) use (&$responses) {
+    $this->queue->setResponseCallback(function ($ch, $content, $context) use (&$responses) {
       $info = curl_getinfo($ch);
-      $responses[$info['url']] = $requestObj;
+      $responses[$info['url']] = $context;
     });
 
-    foreach ($this->extUrlConfig as $url => $requestObj) {
-      $this->queue->add($url, $requestObj);
+    foreach ($this->extUrlConfig as $url => $context) {
+      $this->queue->add($url, $context);
     }
 
     // exec() should stop before any work
@@ -163,12 +163,12 @@ class CurlyQueueTest extends PHPUnit_Framework_TestCase
   public function handlesBatchLargerThanQueue()
   {
     $responses = array();
-    $this->queue->setResponseCallback(function ($ch, $content, $requestObj) use (&$responses) {
+    $this->queue->setResponseCallback(function ($ch, $content, $context) use (&$responses) {
       $info = curl_getinfo($ch);
-      $responses[$info['url']] = $requestObj;
+      $responses[$info['url']] = $context;
     });
-    foreach ($this->extUrlConfig as $url => $requestObj) {
-      $this->queue->add($url, $requestObj);
+    foreach ($this->extUrlConfig as $url => $context) {
+      $this->queue->add($url, $context);
     }
 
     $queueSize = count($this->extUrlConfig);
@@ -186,11 +186,11 @@ class CurlyQueueTest extends PHPUnit_Framework_TestCase
     $responses = array();
     $that = $this;
 
-    $this->queue->setResponseCallback(function ($ch, $content, $requestObj) use (&$responses, $that) {
+    $this->queue->setResponseCallback(function ($ch, $content, $context) use (&$responses, $that) {
       $info = curl_getinfo($ch);
       $that->assertSame(200, $info['http_code']);
       $that->assertGreaterThanOrEqual(9000, $info['size_download']);
-      $responses[$info['url']] = $requestObj;
+      $responses[$info['url']] = $context;
     });
 
     $queueSize = count($this->extUrlConfig);
@@ -200,14 +200,14 @@ class CurlyQueueTest extends PHPUnit_Framework_TestCase
       $that->assertSame($queueSize, count($responses), var_export($responses, true));
     });
 
-    foreach ($this->extUrlConfig as $url => $requestObj) {
-      $this->queue->add($url, $requestObj);
+    foreach ($this->extUrlConfig as $url => $context) {
+      $this->queue->add($url, $context);
     }
     $this->queue->exec($queueSize / 2);
 
     $this->assertSame($queueSize, count($responses));
-    foreach ($this->extUrlConfig as $url => $requestObj) {
-      $this->assertSame($requestObj, $responses[$url]);
+    foreach ($this->extUrlConfig as $url => $context) {
+      $this->assertSame($context, $responses[$url]);
     }
   }
 }
