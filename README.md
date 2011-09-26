@@ -10,6 +10,7 @@ curlyqueue wraps a cURL handle queue that supports:
 
 ## Usage
 
+```php
 $poolSize = 2;
 $maxRunTimeInSecs = 4;
 
@@ -29,12 +30,13 @@ $queue->setErrorCallback(function($ch, $context) {
 });
 
 $queue->exec($poolSize);
+```
 
 ## Events
 
-* setResponseCallback($ch, $content, $context) - Fired on each received response, whether 200 or not.
-* setErrorCallback($ch, $context) - Fired on each failed request (e.g. host lookup error).
-* setEndCallback() - Fired on completed queue.
+* `setResponseCallback($ch, $content, $context)` - Fired on each received response, whether 200 or not.
+* `setErrorCallback($ch, $context)` - Fired on each failed request (e.g. host lookup error).
+* `setEndCallback()` - Fired on completed queue.
 
 ## Requirements
 
