@@ -4,8 +4,8 @@ curlyqueue wraps a cURL handle queue that supports:
 
 * Success/error callbacks
 * Per-request context/userdata
-* Josh Fraser's [rolling queue](http://onlineaspect.com/2009/01/26/how-to-use-curl_multi-without-blocking/) for a fixed handle pool size
-* Optional run time limiting via [Flow\Interruptable](https://github.com/codeactual/flow) interface
+* Fixed handle pool size
+* Optional run time limiting via [\Flow\Interruptable](https://github.com/codeactual/flow) interface
 * Control over all cURL options
 
 ## Usage
@@ -42,3 +42,9 @@ $queue->exec($poolSize);
 
 * PHP 5.3+
 * [flow](https://github.com/codeactual/flow) (submodule)
+
+## License / Credit
+
+I originally started this in 2009 before the base code, by [Josh Fraser](http://onlineaspect.com/2009/01/26/how-to-use-curl_multi-without-blocking/), was later updated, licensed and posted to [Google Code](http://code.google.com/p/rolling-curl/). So it's not clear to me that I need to switch to Apache License Version 2.0.
+
+But what should be made clear is that he deserves credit for the base code of the rolling queue, callbacks, and cURL option support. Please check out his repository to see if his current version better suits your needs.
