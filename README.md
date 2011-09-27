@@ -10,7 +10,8 @@ curlyqueue wraps a cURL handle queue that supports:
 
 ## Usage
 
-```php
+``` php
+<?php
 $poolSize = 2;
 $maxRunTimeInSecs = 4;
 
