@@ -8,6 +8,8 @@ curlyqueue wraps a cURL handle queue that supports:
 * Optional run time limiting via [\Flow\Interruptable](https://github.com/codeactual/flow) interface
 * Control over all cURL options
 
+High unit test coverage using PHPUnit.
+
 ## Usage
 
 ``` php
