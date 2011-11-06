@@ -91,7 +91,7 @@ class CurlyQueue implements Interruptable
    */
   public function isInterrupted()
   {
-    if (call_user_func($this->interruptCheck)) {
+    if ($this->interruptCheck && call_user_func($this->interruptCheck)) {
       $this->endExec();
       return true;
     }

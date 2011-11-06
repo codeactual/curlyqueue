@@ -21,8 +21,6 @@ class CurlyQueueTest extends PHPUnit_Framework_TestCase
 
     $this->queue = new CurlyQueue($this->queueConfig);
 
-    Flow::setMaxRuntime($this->queue, 10);
-
     $this->extUrlConfig = array(
       'http://www.google.com/' => uniqid(),
       'http://twitter.com/' => uniqid(),
